@@ -50,7 +50,7 @@ export SLURM_HOME=/nfs/slurm
 
 #Calculate n GPUs
 if [ -z /dev/nvidia0 ]; then
-    NUM_GPUS=$(ls -l /dev/nvidia* | egrep 'nvidia[0-9]' | wc -l | | sed 's/ //g')
+    NUM_GPUS=$(ls -l /dev/nvidia* | egrep 'nvidia[0-9]' | wc -l | sed 's/ //g')
     export GPU_STANZA=$(echo `Gres=gpu:$NUM_GPUS`)
     for i in $(seq 0 `expr $NUM_GPUS - 1`); do
         export SLURM_COMPUTE_NODE=$(echo `/nfs/slurm/sbin/slurmd -C` | cut -d " " -f1)

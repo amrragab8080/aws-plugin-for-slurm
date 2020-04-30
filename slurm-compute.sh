@@ -49,15 +49,14 @@ sudo mount -t nfs $1:/nfs /nfs
 export SLURM_HOME=/nfs/slurm
 
 #Calculate n GPUs
-if [ -z /dev/nvidia* ]; then
-   NUM_GPUS=$(ls -l /dev/nvidia* | wc -l)
-   export GPU_STANZA=$(echo `Gres=gpu:$NUM_GPUS`)
-   for i in $(seq 0 `expr $NUM_GPUS - 1`); do
-       export SLURM_COMPUTE_NODE=$(echo `/nfs/slurm/sbin/slurmd -C` | cut -d " " -f1)
-       echo $SLURM_COMPUTE_NODE Name=gpu File=/dev/nvidia$i | sudo -E tee -a $SLURM_HOME/etc/gres.conf
-   done
+if [ -z /dev/nvidia0 ]; then
+    NUM_GPUS=$(ls -l /dev/nvidia* | egrep 'nvidia[0-9]' | wc -l | | sed 's/ //g')
+    export GPU_STANZA=$(echo `Gres=gpu:$NUM_GPUS`)
+    for i in $(seq 0 `expr $NUM_GPUS - 1`); do
+        export SLURM_COMPUTE_NODE=$(echo `/nfs/slurm/sbin/slurmd -C` | cut -d " " -f1)
+        echo $SLURM_COMPUTE_NODE Name=gpu File=/dev/nvidia$i | sudo -E tee -a $SLURM_HOME/etc/gres.conf
+    done
 fi
-
 
 export SLURM_COMPUTE=$(echo `/nfs/slurm/sbin/slurmd -C` | cut -d " " -f1,2,5,6,7)
 

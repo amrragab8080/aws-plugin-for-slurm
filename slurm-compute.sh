@@ -49,7 +49,7 @@ sudo mount -t nfs $1:/nfs /nfs
 export SLURM_HOME=/nfs/slurm
 
 #Calculate n GPUs
-if [ -z /dev/nvidia0 ]; then
+if [ -e /dev/nvidia0 ]; then
     NUM_GPUS=$(ls -l /dev/nvidia* | egrep 'nvidia[0-9]' | wc -l | sed 's/ //g')
     export GPU_STANZA=$(echo `Gres=gpu:$NUM_GPUS`)
     for i in $(seq 0 `expr $NUM_GPUS - 1`); do
